@@ -32,10 +32,23 @@ public final class Main {
   // Cada una de estas responsabilidades podría extraerse a un método con nombre claro:
   //   buildContainer(), buildConsole(), buildCli(), run().
   public static void main(final String[] args) {
+    runApplication();
+  }
+
+  private static void runApplication() {
     log.info("Starting Users Management System...");
-    final DependencyContainer container = new DependencyContainer();
+    final DependencyContainer container = buildContainer();
     try (final Scanner scanner = new Scanner(System.in)) {
-      new UserManagementCli(container.userController(), new ConsoleIO(scanner, System.out)).start();
+      buildCli(container, scanner).start();
     }
+  }
+
+  private static DependencyContainer buildContainer() {
+    return new DependencyContainer();
+  }
+
+  private static UserManagementCli buildCli(
+      final DependencyContainer container, final Scanner scanner) {
+    return new UserManagementCli(container.userController(), new ConsoleIO(scanner, System.out));
   }
 }
