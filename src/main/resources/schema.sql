@@ -3,11 +3,11 @@
 -- Gestión de Usuarios - Arquitectura Hexagonal
 -- =============================================
 
-CREATE DATABASE IF NOT EXISTS crud_usuarios
+CREATE DATABASE IF NOT EXISTS users_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE crud_usuarios;
+USE users_db;
 
 CREATE TABLE IF NOT EXISTS users (
     id          VARCHAR(36)  NOT NULL PRIMARY KEY,

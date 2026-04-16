@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: users-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: users_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: users-mailhog
+    restart: unless-stopped
+    environment:
+      MH_SMTP_BIND_ADDR: 0.0.0.0:587
+      MH_UI_BIND_ADDR: 0.0.0.0:8025
+    ports:
+      - "587:587"
+      - "8025:8025"
+
+volumes:
+  mysql_data:
