@@ -30,12 +30,7 @@ public final class UpdateUserService implements UpdateUserUseCase {
   private final Validator validator;
 
   @Override
-  public UserModel execute(final UpdateUserCommand command) {
-    // Clean Code - Regla 8 (separar comandos y consultas — CQS):
-    // Este método MODIFICA estado (actualiza el usuario en base de datos)
-    // Y TAMBIÉN RETORNA el usuario actualizado (consulta).
-    // La regla dice: un método que modifica estado no debe presentarse como consulta.
-    // Solución: void execute(command) para el comando + UserModel getUpdatedUser(id) para la consulta.
+  public void execute(final UpdateUserCommand command) {
     validateCommand(command);
 
     log.info("Actualizando usuario.");
@@ -51,8 +46,6 @@ public final class UpdateUserService implements UpdateUserUseCase {
     final UserModel updatedUser = updateUserPort.update(userToUpdate);
 
     emailNotificationService.notifyUserUpdated(updatedUser);
-
-    return updatedUser;
   }
 
 
