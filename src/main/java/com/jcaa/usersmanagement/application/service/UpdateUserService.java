@@ -17,6 +17,7 @@ import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Log
@@ -64,8 +65,8 @@ public final class UpdateUserService implements UpdateUserUseCase {
   }
 
   private void ensureEmailIsNotTakenByAnotherUser(final UserEmail newEmail, final UserId ownerId) {
-    final var existingUserWithEmail = getUserByEmailPort.getByEmail(newEmail);
-    if (existingUserWithEmail.isEmpty()) {
+    final Optional<UserModel> existingUserWithEmail = findUserByEmail(newEmail);
+    if (isEmailAvailable(existingUserWithEmail)) {
       return;
     }
 
@@ -73,6 +74,14 @@ public final class UpdateUserService implements UpdateUserUseCase {
     if (isDifferentUser(existingUser, ownerId)) {
       throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
     }
+  }
+
+  private Optional<UserModel> findUserByEmail(final UserEmail email) {
+    return getUserByEmailPort.getByEmail(email);
+  }
+
+  private static boolean isEmailAvailable(final Optional<UserModel> existingUserWithEmail) {
+    return existingUserWithEmail.isEmpty();
   }
 
   private static boolean isDifferentUser(final UserModel existingUser, final UserId ownerId) {

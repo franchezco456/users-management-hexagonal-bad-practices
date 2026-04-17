@@ -11,6 +11,7 @@ import lombok.extern.java.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -55,19 +56,21 @@ public final class EmailNotificationService {
 
   private static Map<String, String> buildCreatedUserTokens(
       final UserModel user, final String plainPassword) {
-    return Map.of(
-        TOKEN_NAME, user.getNameValue(),
-        TOKEN_EMAIL, user.getEmailValue(),
-        TOKEN_PASSWORD, plainPassword,
-        TOKEN_ROLE, user.getRoleDisplayName());
+    final Map<String, String> createdTokens = new LinkedHashMap<>();
+    createdTokens.put(TOKEN_NAME, user.getNameValue());
+    createdTokens.put(TOKEN_EMAIL, user.getEmailValue());
+    createdTokens.put(TOKEN_PASSWORD, plainPassword);
+    createdTokens.put(TOKEN_ROLE, user.getRoleDisplayName());
+    return Map.copyOf(createdTokens);
   }
 
   private static Map<String, String> buildUpdatedUserTokens(final UserModel user) {
-    return Map.of(
-        TOKEN_NAME, user.getNameValue(),
-        TOKEN_EMAIL, user.getEmailValue(),
-        TOKEN_ROLE, user.getRoleDisplayName(),
-        TOKEN_STATUS, user.getStatusDisplayName());
+    final Map<String, String> updatedTokens = new LinkedHashMap<>();
+    updatedTokens.put(TOKEN_NAME, user.getNameValue());
+    updatedTokens.put(TOKEN_EMAIL, user.getEmailValue());
+    updatedTokens.put(TOKEN_ROLE, user.getRoleDisplayName());
+    updatedTokens.put(TOKEN_STATUS, user.getStatusDisplayName());
+    return Map.copyOf(updatedTokens);
   }
 
   private static EmailDestinationModel buildDestination(
