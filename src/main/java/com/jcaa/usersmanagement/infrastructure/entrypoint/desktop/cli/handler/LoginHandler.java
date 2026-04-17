@@ -26,9 +26,7 @@ public final class LoginHandler implements OperationHandler {
       console.println("\n  Login successful. Welcome!");
       printer.print(user);
     } catch (final InvalidCredentialsException exception) {
-      // VIOLACIÓN Regla 6: se loguea el email del usuario (PII) al registrar el fallo de login.
-      // Los datos de negocio/cliente son PII y NO deben loguearse nunca.
-      log.warning("Intento de login fallido para email: " + email);
+      log.warning("Intento de login fallido.");
       console.println("  Error: " + exception.getMessage());
     }
   }
