@@ -21,6 +21,8 @@ public final class EmailNotificationService {
   private static final String SUBJECT_CREATED = "Tu cuenta ha sido creada — Gestión de Usuarios";
   private static final String SUBJECT_UPDATED =
       "Tu cuenta ha sido actualizada — Gestión de Usuarios";
+  private static final String TEMPLATE_CREATED = "user-created.html";
+  private static final String TEMPLATE_UPDATED = "user-updated.html";
 
   private static final String TOKEN_NAME     = "name";
   private static final String TOKEN_EMAIL    = "email";
@@ -31,27 +33,13 @@ public final class EmailNotificationService {
   private final EmailSenderPort emailSenderPort;
 
   public void notifyUserCreated(final UserModel user, final String plainPassword) {
-    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
-    final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getNameValue(),
-        TOKEN_EMAIL, user.getEmailValue(),
-        TOKEN_PASSWORD, plainPassword,
-        TOKEN_ROLE, user.getRoleDisplayName());
-    prepareAndSendNotification(user, SUBJECT_CREATED, "user-created.html", tokens);
+    final Map<String, String> tokens = buildCreatedUserTokens(user, plainPassword);
+    prepareAndSendNotification(user, SUBJECT_CREATED, TEMPLATE_CREATED, tokens);
   }
 
   public void notifyUserUpdated(final UserModel user) {
-    // Clean Code - Regla 11 (evitar duplicación): misma estructura que notifyUserCreated —
-    // loadTemplate → renderTemplate → buildDestination → sendOrLog.
-    // Esta lógica de orquestación debería extraerse a un método genérico privado.
-    // Clean Code - Regla 25 y 26: misma sobrecompactación que arriba.
-    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
-    final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getNameValue(),
-        TOKEN_EMAIL, user.getEmailValue(),
-        TOKEN_ROLE, user.getRoleDisplayName(),
-        TOKEN_STATUS, user.getStatusDisplayName());
-    prepareAndSendNotification(user, SUBJECT_UPDATED, "user-updated.html", tokens);
+    final Map<String, String> tokens = buildUpdatedUserTokens(user);
+    prepareAndSendNotification(user, SUBJECT_UPDATED, TEMPLATE_UPDATED, tokens);
   }
 
   private void prepareAndSendNotification(
@@ -65,11 +53,25 @@ public final class EmailNotificationService {
     send(destination);
   }
 
+  private static Map<String, String> buildCreatedUserTokens(
+      final UserModel user, final String plainPassword) {
+    return Map.of(
+        TOKEN_NAME, user.getNameValue(),
+        TOKEN_EMAIL, user.getEmailValue(),
+        TOKEN_PASSWORD, plainPassword,
+        TOKEN_ROLE, user.getRoleDisplayName());
+  }
 
+  private static Map<String, String> buildUpdatedUserTokens(final UserModel user) {
+    return Map.of(
+        TOKEN_NAME, user.getNameValue(),
+        TOKEN_EMAIL, user.getEmailValue(),
+        TOKEN_ROLE, user.getRoleDisplayName(),
+        TOKEN_STATUS, user.getStatusDisplayName());
+  }
 
   private static EmailDestinationModel buildDestination(
       final UserModel user, final String subject, final String body) {
-    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
     return new EmailDestinationModel(
         user.getEmailValue(), user.getNameValue(), subject, body);
   }

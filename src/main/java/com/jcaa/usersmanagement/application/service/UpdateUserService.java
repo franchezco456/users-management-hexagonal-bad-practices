@@ -64,18 +64,18 @@ public final class UpdateUserService implements UpdateUserUseCase {
   }
 
   private void ensureEmailIsNotTakenByAnotherUser(final UserEmail newEmail, final UserId ownerId) {
-    // Condición limpia: extraer lógica compleja a variables y métodos nombrados significativamente.
-    // Antes: multiple llamadas al repositorio en una soia expresión booleana compleja.
-    // Ahora: obtener una sola vez, evaluar con nombres claros.
     final var existingUserWithEmail = getUserByEmailPort.getByEmail(newEmail);
-    
-    if (existingUserWithEmail.isPresent()) {
-      final UserModel existingUser = existingUserWithEmail.get();
-      final boolean emailBelongsToAnotherUser = !existingUser.getId().equals(ownerId);
-      
-      if (emailBelongsToAnotherUser) {
-        throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
-      }
+    if (existingUserWithEmail.isEmpty()) {
+      return;
     }
+
+    final UserModel existingUser = existingUserWithEmail.get();
+    if (isDifferentUser(existingUser, ownerId)) {
+      throw UserAlreadyExistsException.becauseEmailAlreadyExists(newEmail.value());
+    }
+  }
+
+  private static boolean isDifferentUser(final UserModel existingUser, final UserId ownerId) {
+    return !existingUser.getId().equals(ownerId);
   }
 }
