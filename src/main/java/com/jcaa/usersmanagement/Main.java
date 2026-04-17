@@ -23,23 +23,13 @@ public final class Main {
 
   private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-  // Clean Code - Regla 1 (una sola cosa por función):
-  // main() hace demasiadas cosas en un solo método:
-  //   1. Construye el contenedor de dependencias (wiring completo de la app).
-  //   2. Crea la infraestructura de I/O (Scanner + ConsoleIO).
-  //   3. Instancia el CLI.
-  //   4. Arranca el loop de ejecución.
-  // Cada una de estas responsabilidades podría extraerse a un método con nombre claro:
-  //   buildContainer(), buildConsole(), buildCli(), run().
   public static void main(final String[] args) {
-    runApplication();
-  }
-
-  private static void runApplication() {
     log.info("Starting Users Management System...");
-    final DependencyContainer container = buildContainer();
     try (final Scanner scanner = new Scanner(System.in)) {
-      buildCli(container, scanner).start();
+      final DependencyContainer container = buildContainer();
+      final ConsoleIO consoleIO = buildConsole(scanner);
+      final UserManagementCli cli = buildCli(container, consoleIO);
+      run(cli);
     }
   }
 
@@ -47,8 +37,16 @@ public final class Main {
     return new DependencyContainer();
   }
 
+  private static ConsoleIO buildConsole(final Scanner scanner) {
+    return new ConsoleIO(scanner, System.out);
+  }
+
   private static UserManagementCli buildCli(
-      final DependencyContainer container, final Scanner scanner) {
-    return new UserManagementCli(container.userController(), new ConsoleIO(scanner, System.out));
+      final DependencyContainer container, final ConsoleIO consoleIO) {
+    return new UserManagementCli(container.userController(), consoleIO);
+  }
+
+  private static void run(final UserManagementCli cli) {
+    cli.start();
   }
 }
