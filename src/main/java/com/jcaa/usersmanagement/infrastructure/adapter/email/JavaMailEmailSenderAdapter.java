@@ -5,7 +5,12 @@ import com.jcaa.usersmanagement.domain.exception.EmailSenderException;
 import com.jcaa.usersmanagement.domain.model.EmailDestinationModel;
 import lombok.extern.java.Log;
 
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
@@ -48,10 +53,7 @@ public final class JavaMailEmailSenderAdapter implements EmailSenderPort {
   private MimeMessage buildMessage(final EmailDestinationModel destination)
       throws MessagingException, UnsupportedEncodingException {
     final MimeMessage message = new MimeMessage(mailSession);
-    // VIOLACIÓN Regla 4: se usa el nombre completo de la clase InternetAddress dentro del código.
-    // Solo debe usarse el nombre completo cuando hay ambigüedad; en este caso no la hay
-    // ya que está importado correctamente con el wildcard.
-    message.setFrom(new javax.mail.internet.InternetAddress(fromAddress, fromName, CHARSET_UTF8));
+    message.setFrom(new InternetAddress(fromAddress, fromName, CHARSET_UTF8));
     message.addRecipient(
         Message.RecipientType.TO,
         new InternetAddress(

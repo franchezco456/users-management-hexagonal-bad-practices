@@ -2,6 +2,7 @@ package com.jcaa.usersmanagement.infrastructure.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 public final class AppProperties {
@@ -20,30 +21,20 @@ public final class AppProperties {
   }
 
   private static Properties doLoad(final InputStream stream) {
-    // VIOLACIÓN Regla 4: se usa == null en lugar de Objects.requireNonNull() o Objects.isNull().
-    // Para objetos siempre debe usarse Objects.isNull/nonNull, nunca operadores == o !=.
-    if (stream == null) {
-      throw new NullPointerException("File not found in classpath: " + PROPERTIES_FILE);
-    }
-    // VIOLACIÓN Regla 4: nombre abreviado "props" en lugar del nombre descriptivo "properties".
-    // Los nombres deben ser claros y sin abreviaturas.
-    final Properties props = new Properties();
+    Objects.requireNonNull(stream, "File not found in classpath: " + PROPERTIES_FILE);
+    final Properties properties = new Properties();
     try (stream) {
-      props.load(stream);
+      properties.load(stream);
     } catch (final IOException exception) {
       throw ConfigurationException.becauseLoadFailed(exception);
     }
-    return props;
+    return properties;
   }
 
   public String get(final String key) {
-    // VIOLACIÓN Regla 4: nombre abreviado "val" en lugar de "value".
-    final String val = properties.getProperty(key);
-    // VIOLACIÓN Regla 4: se usa == null en lugar de Objects.requireNonNull() o Objects.isNull().
-    if (val == null) {
-      throw new NullPointerException("Property not found in " + PROPERTIES_FILE + ": " + key);
-    }
-    return val;
+    final String value = properties.getProperty(key);
+    Objects.requireNonNull(value, "Property not found in " + PROPERTIES_FILE + ": " + key);
+    return value;
   }
 
   public int getInt(final String key) {

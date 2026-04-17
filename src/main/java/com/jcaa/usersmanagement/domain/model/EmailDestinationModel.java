@@ -1,5 +1,6 @@
 package com.jcaa.usersmanagement.domain.model;
 
+import java.util.Objects;
 import lombok.Value;
 
 @Value
@@ -22,11 +23,7 @@ public class EmailDestinationModel {
   }
 
   private static String validateNotBlank(final String value, final String errorMessage) {
-    // VIOLACIÓN Regla 4: se usa == null en lugar de Objects.requireNonNull() o Objects.isNull().
-    // Para objetos siempre debe usarse Objects.isNull/nonNull, nunca operadores == o !=.
-    if (value == null) {
-      throw new NullPointerException(errorMessage);
-    }
+    Objects.requireNonNull(value, errorMessage);
     // VIOLACIÓN Regla 10: mensajes de error hardcodeados en el cuerpo del método,
     // en lugar de definirse como constantes con nombre descriptivo.
     if (value.trim().isEmpty()) {

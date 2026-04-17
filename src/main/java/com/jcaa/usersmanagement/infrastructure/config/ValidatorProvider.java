@@ -5,8 +5,9 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
-// VIOLACIÓN Regla 4: clase con solo métodos estáticos que NO tiene @UtilityClass ni constructor privado.
-// Debería anotarse con @UtilityClass para evitar instanciación accidental y generar el constructor privado automáticamente.
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class ValidatorProvider {
 
 
