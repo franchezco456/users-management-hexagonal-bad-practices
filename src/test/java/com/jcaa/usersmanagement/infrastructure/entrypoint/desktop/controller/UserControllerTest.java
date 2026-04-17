@@ -114,11 +114,11 @@ class UserControllerTest {
     assertAll(
         "single-user list mapping",
         () -> assertEquals(1, result.size(), "list must contain exactly one element"),
-        () -> assertEquals("u-001", result.get(0).getId(), "id must match"),
-        () -> assertEquals("Alice Smith", result.get(0).getName(), "name must match"),
-        () -> assertEquals("alice@example.com", result.get(0).getEmail(), "email must match"),
-        () -> assertEquals("ADMIN", result.get(0).getRole(), "role must match enum name"),
-        () -> assertEquals("ACTIVE", result.get(0).getStatus(), "status must match enum name"));
+        () -> assertEquals("u-001", result.get(0).id(), "id must match"),
+        () -> assertEquals("Alice Smith", result.get(0).name(), "name must match"),
+        () -> assertEquals("alice@example.com", result.get(0).email(), "email must match"),
+        () -> assertEquals("ADMIN", result.get(0).role(), "role must match enum name"),
+        () -> assertEquals("ACTIVE", result.get(0).status(), "status must match enum name"));
     verify(getAllUsersUseCase).execute();
   }
 
@@ -153,11 +153,11 @@ class UserControllerTest {
     // Assert
     assertAll(
         "findUserById response mapping",
-        () -> assertEquals("u-002", result.getId(), "id must match"),
-        () -> assertEquals("Bob Jones", result.getName(), "name must match"),
-        () -> assertEquals("bob@example.com", result.getEmail(), "email must match"),
-        () -> assertEquals("MEMBER", result.getRole(), "role must match enum name"),
-        () -> assertEquals("ACTIVE", result.getStatus(), "status must match enum name"));
+        () -> assertEquals("u-002", result.id(), "id must match"),
+        () -> assertEquals("Bob Jones", result.name(), "name must match"),
+        () -> assertEquals("bob@example.com", result.email(), "email must match"),
+        () -> assertEquals("MEMBER", result.role(), "role must match enum name"),
+        () -> assertEquals("ACTIVE", result.status(), "status must match enum name"));
   }
 
   @Test
@@ -217,12 +217,12 @@ class UserControllerTest {
         () ->
             assertEquals(
                 "u-003",
-                result.getId(),
+                result.id(),
                 "response id must come from the domain model returned by use case"),
         () ->
             assertEquals(
                 "PENDING",
-                result.getStatus(),
+                result.status(),
                 "response status must reflect the domain model status"));
   }
 
@@ -287,11 +287,11 @@ class UserControllerTest {
         () ->
             assertEquals(
                 "u-005",
-                result.getId(),
+                result.id(),
                 "response id must come from the domain model returned by use case"),
         () ->
             assertEquals(
-                "ADMIN", result.getRole(), "response role must reflect the domain model role"));
+                "ADMIN", result.role(), "response role must reflect the domain model role"));
   }
 
   @Test
@@ -366,9 +366,9 @@ class UserControllerTest {
         "login command delegation and response mapping",
         () -> assertEquals("frank@example.com", captor.getValue().email()),
         () -> assertEquals("Pass1234!",         captor.getValue().password()),
-        () -> assertEquals("u-007",             result.getId()),
-        () -> assertEquals("frank@example.com", result.getEmail()),
-        () -> assertEquals("ACTIVE",            result.getStatus()));
+        () -> assertEquals("u-007",             result.id()),
+        () -> assertEquals("frank@example.com", result.email()),
+        () -> assertEquals("ACTIVE",            result.status()));
   }
 
   @Test
