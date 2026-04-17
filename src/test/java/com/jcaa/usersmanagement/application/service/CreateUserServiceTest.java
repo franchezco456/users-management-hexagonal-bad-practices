@@ -20,13 +20,13 @@ import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-// VIOLACIÓN Regla 11: se eliminó @DisplayName de la clase y de los métodos.
-// Los tests deben tener nombres descriptivos con @DisplayName para documentar el comportamiento.
+@DisplayName("CreateUserService")
 @ExtendWith(MockitoExtension.class)
 class CreateUserServiceTest {
 
@@ -49,9 +49,9 @@ class CreateUserServiceTest {
   }
 
   @Test
-  // VIOLACIÓN Regla 11: no hay comentarios de estructura Arrange–Act–Assert.
-  // La regla exige que los bloques estén documentados con // Arrange, // Act, // Assert.
+  @DisplayName("Debe guardar usuario y notificar cuando el email es nuevo")
   void shouldSaveUserAndNotifyWhenEmailIsNew() {
+    // Arrange
     final CreateUserCommand command =
         new CreateUserCommand("u-01", "John Arrieta", "john@example.com", "Pass1234", "ADMIN");
     final UserModel savedUser =
@@ -64,18 +64,21 @@ class CreateUserServiceTest {
             UserStatus.PENDING);
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.empty());
     when(saveUserPort.save(any())).thenReturn(savedUser);
+    
+    // Act
     final UserModel result = service.execute(command);
-    // VIOLACIÓN Regla 11: se usa assertTrue(x != null) en lugar de assertNotNull(x).
-    // La regla indica usar las últimas aserciones — assertNotNull es más expresivo y correcto.
-    assertTrue(result != null);
-    assertTrue(result.getId().value().equals("u-01"));
+    
+    // Assert
+    assertNotNull(result);
+    assertEquals("u-01", result.getId().value());
     verify(saveUserPort).save(any(UserModel.class));
     verify(emailNotificationService).notifyUserCreated(savedUser, "Pass1234");
   }
 
   @Test
+  @DisplayName("Debe lanzar excepcion cuando el email ya existe")
   void shouldThrowWhenEmailAlreadyExists() {
-    // VIOLACIÓN Regla 11: Arrange y Act–Assert mezclados sin separación ni comentarios AAA.
+    // Arrange
     final CreateUserCommand command =
         new CreateUserCommand("u-02", "Jane Doe", "jane@example.com", "Pass5678", "MEMBER");
     final UserModel existing =
@@ -87,15 +90,21 @@ class CreateUserServiceTest {
             UserRole.MEMBER,
             UserStatus.ACTIVE);
     when(getUserByEmailPort.getByEmail(any())).thenReturn(Optional.of(existing));
+    
+    // Act & Assert
     assertThrows(UserAlreadyExistsException.class, () -> service.execute(command));
     verify(saveUserPort, never()).save(any());
     verify(emailNotificationService, never()).notifyUserCreated(any(), any());
   }
 
   @Test
+  @DisplayName("Debe lanzar excepcion cuando el comando es invalido")
   void shouldThrowWhenCommandIsInvalid() {
+    // Arrange
     final CreateUserCommand command =
         new CreateUserCommand("", "Jo", "not-an-email", "short", "ADMIN");
+    
+    // Act & Assert
     assertThrows(ConstraintViolationException.class, () -> service.execute(command));
     verifyNoInteractions(saveUserPort, getUserByEmailPort, emailNotificationService);
   }
