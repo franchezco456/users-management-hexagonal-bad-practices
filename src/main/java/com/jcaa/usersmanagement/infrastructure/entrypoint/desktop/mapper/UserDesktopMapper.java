@@ -51,12 +51,13 @@ public final class UserDesktopMapper {
   }
 
   public static UserResponse toResponse(final UserModel user) {
+    // Ley de Deméter: usar métodos delegadores en lugar de encadenamiento profundo
     return new UserResponse(
-        user.getId().value(),
-        user.getName().value(),
-        user.getEmail().value(),
-        user.getRole().name(),
-        user.getStatus().name());
+        user.getIdValue(),
+        user.getNameValue(),
+        user.getEmailValue(),
+        user.getRoleDisplayName(),
+        user.getStatusDisplayName());
   }
 
   public static List<UserResponse> toResponseList(final List<UserModel> users) {

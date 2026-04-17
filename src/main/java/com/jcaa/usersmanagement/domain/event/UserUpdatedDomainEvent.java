@@ -18,11 +18,12 @@ public final class UserUpdatedDomainEvent extends DomainEvent {
 
   @Override
   public Map<String, String> payload() {
+    // Ley de Deméter: usar métodos delegadores en lugar de encadenamiento profundo
     return Map.of(
-        "id", user.getId().value(),
-        "name", user.getName().value(),
-        "email", user.getEmail().value(),
-        "role", user.getRole().name(),
-        "status", user.getStatus().name());
+        "id", user.getIdValue(),
+        "name", user.getNameValue(),
+        "email", user.getEmailValue(),
+        "role", user.getRoleDisplayName(),
+        "status", user.getStatusDisplayName());
   }
 }
