@@ -32,7 +32,7 @@ public final class CreateUserService implements CreateUserUseCase {
 
   @Override
   public UserModel execute(final CreateUserCommand command) {
-    validateCommand(command);
+    validateFields(command);
 
     log.info("Creando usuario con email=" + command.email() + ", nombre=" + command.name());
 
@@ -43,14 +43,10 @@ public final class CreateUserService implements CreateUserUseCase {
 
     notifyUser(savedUser, command.password());
 
-    // retornar el usuario guardado
     return savedUser;
   }
 
-  private void validateCommand(final CreateUserCommand command) {
-    // Clean Code - Regla 9: se usa comentario para tapar un bloque poco expresivo.
-    // La regla dice: antes de comentar, intenta mejorar nombres y extraer funciones.
-    // validar campos del command
+  private void validateFields(final CreateUserCommand command) {
     final Set<ConstraintViolation<CreateUserCommand>> violations = validator.validate(command);
     if (!violations.isEmpty()) {
       throw new ConstraintViolationException(violations);
@@ -58,8 +54,6 @@ public final class CreateUserService implements CreateUserUseCase {
   }
 
   private void verifyEmailDoesNotExist(final String emailAddress) {
-    // Clean Code - Regla 10: comentario redundante — el código siguiente ya dice lo mismo.
-    // verificar si el email ya existe en la base de datos
     final UserEmail email = new UserEmail(emailAddress);
     if (getUserByEmailPort.getByEmail(email).isPresent()) {
       throw UserAlreadyExistsException.becauseEmailAlreadyExists(email.value());
@@ -69,14 +63,10 @@ public final class CreateUserService implements CreateUserUseCase {
 
 
   private UserModel saveUser(final UserModel userToSave) {
-    // Clean Code - Regla 10: comentario que explica lo obvio — no aporta valor.
-    // guardar el usuario en la base de datos
     return saveUserPort.save(userToSave);
   }
 
   private void notifyUser(final UserModel savedUser, final String password) {
-    // Clean Code - Regla 10: otro comentario redundante.
-    // enviar notificacion de bienvenida al usuario creado
     emailNotificationService.notifyUserCreated(savedUser, password);
   }
 }
