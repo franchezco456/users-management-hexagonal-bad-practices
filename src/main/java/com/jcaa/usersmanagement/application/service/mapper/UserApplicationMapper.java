@@ -11,7 +11,6 @@ import com.jcaa.usersmanagement.domain.valueobject.UserEmail;
 import com.jcaa.usersmanagement.domain.valueobject.UserId;
 import com.jcaa.usersmanagement.domain.valueobject.UserName;
 import com.jcaa.usersmanagement.domain.valueobject.UserPassword;
-import java.util.Objects;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.constant.UserEnumConstants;
 
 public class UserApplicationMapper {
@@ -72,15 +71,10 @@ public class UserApplicationMapper {
   }
 
   // Clean Code - Regla 21 (no retornar banderas de error):
-  // Este método retorna 1, 2, 3 o -1 como códigos de resultado para representar roles.
-  // La regla dice: no usar valores especiales (-1, null, "ERROR", false) para señalar errores.
-  // El contrato de salida NO diferencia ausencia, falla y éxito:
-  //   - ¿Qué significa -1? ¿Error de parseo? ¿Rol desconocido? ¿No autorizado?
-  //   - El llamador DEBE recordar qué valor representa cada caso — frágil y opaco.
-  // Solución: lanzar IllegalArgumentException o usar Optional<Integer> con semántica clara.
+  // En caso inválido se lanza IllegalArgumentException para exponer un contrato explícito.
   public static int roleToCode(final String role) {
-    if (Objects.isNull(role) || role.isBlank()) {
-      return -1;
+    if (role == null || role.isBlank()) {
+      throw new IllegalArgumentException("Role cannot be null or blank");
     }
     if (UserEnumConstants.ROLE_ADMIN.equalsIgnoreCase(role)) {
       return 1;
@@ -89,6 +83,6 @@ public class UserApplicationMapper {
     } else if (UserEnumConstants.ROLE_REVIEWER.equalsIgnoreCase(role)) {
       return 3;
     }
-    return -1;
+    throw new IllegalArgumentException("Unsupported role: " + role);
   }
 }

@@ -146,5 +146,40 @@ class UserApplicationMapperTest {
     // Assert
     assertEquals(ID, result.value(), "id debe coincidir con el del command");
   }
+
+  // ── roleToCode()
+
+  @Test
+  @DisplayName("roleToCode() retorna código válido para roles conocidos")
+  void shouldReturnCodeForKnownRoles() {
+    assertAll(
+        "roleToCode() known roles",
+        () -> assertEquals(1, UserApplicationMapper.roleToCode("ADMIN")),
+        () -> assertEquals(2, UserApplicationMapper.roleToCode("member")),
+        () -> assertEquals(3, UserApplicationMapper.roleToCode("Reviewer")));
+  }
+
+  @Test
+  @DisplayName("roleToCode() lanza IllegalArgumentException cuando el rol es null o blank")
+  void shouldThrowWhenRoleIsNullOrBlank() {
+    assertAll(
+        "roleToCode() invalid empty inputs",
+        () ->
+            assertThrows(
+                IllegalArgumentException.class,
+                () -> UserApplicationMapper.roleToCode(null)),
+        () ->
+            assertThrows(
+                IllegalArgumentException.class,
+                () -> UserApplicationMapper.roleToCode("   ")));
+  }
+
+  @Test
+  @DisplayName("roleToCode() lanza IllegalArgumentException cuando el rol es desconocido")
+  void shouldThrowWhenRoleIsUnknown() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> UserApplicationMapper.roleToCode("OWNER"));
+  }
 }
 
