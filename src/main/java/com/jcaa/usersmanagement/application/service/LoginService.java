@@ -41,9 +41,8 @@ public final class LoginService implements LoginUseCase {
   }
 
   private void verifyPassword(final UserModel user, final String plainPassword) {
-    // Clean Code - Regla 14: acceso profundo a internals del value object.
-    // user -> getPassword() -> verifyPlain() en lugar de delegar con user.passwordMatches(plain).
-    if (!user.getPassword().verifyPlain(plainPassword)) {
+    // Ley de Deméter: usar método delegador en lugar de acceso profundo
+    if (!user.passwordMatches(plainPassword)) {
       throw InvalidCredentialsException.becauseCredentialsAreInvalid();
     }
   }

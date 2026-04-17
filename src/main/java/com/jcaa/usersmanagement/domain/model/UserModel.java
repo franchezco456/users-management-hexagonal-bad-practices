@@ -50,4 +50,25 @@ public class UserModel {
     return status == UserStatus.ACTIVE;
   }
 
+  // Métodos delegadores para romper Ley de Deméter: no exponen los value objects internos
+  public String getIdValue() {
+    return id.value();
+  }
+
+  public String getNameValue() {
+    return name.value();
+  }
+
+  public String getEmailValue() {
+    return email.value();
+  }
+
+  public String getPasswordValue() {
+    return password.value();
+  }
+
+  public boolean passwordMatches(final String plainPassword) {
+    return password.verifyPlain(plainPassword);
+  }
+
 }

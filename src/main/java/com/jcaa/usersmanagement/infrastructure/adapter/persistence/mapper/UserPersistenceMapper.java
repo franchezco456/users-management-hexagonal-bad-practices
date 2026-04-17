@@ -26,17 +26,12 @@ import lombok.experimental.UtilityClass;
 public final class UserPersistenceMapper {
 
   public static UserPersistenceDto fromModelToDto(final UserModel user) {
-    // Clean Code - Regla 14 (Ley de Deméter):
-    // Cada línea encadena dos llamadas: user → getValue object → .value().
-    // Por ejemplo: user.getId().value() navega al interior del value object UserId
-    // para extraer el String. El mapper no debería acceder a los internals del value object;
-    // debería existir un método user.getIdValue() o delegarse al propio objeto.
-    // La Ley de Deméter dice: habla solo con tus amigos directos, no con los amigos de tus amigos.
+    // Ley de Deméter: usar métodos delegadores en lugar de encadenamiento profundo
     return new UserPersistenceDto(
-        user.getId().value(),
-        user.getName().value(),
-        user.getEmail().value(),
-        user.getPassword().value(),
+        user.getIdValue(),
+        user.getNameValue(),
+        user.getEmailValue(),
+        user.getPasswordValue(),
         user.getRole().name(),
         user.getStatus().name(),
         null,
