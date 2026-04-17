@@ -7,6 +7,7 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.controller.Use
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UpdateUserRequest;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.constant.UserEnumConstants;
 
 @RequiredArgsConstructor
 public final class UpdateUserHandler implements OperationHandler {
@@ -21,8 +22,17 @@ public final class UpdateUserHandler implements OperationHandler {
     final String name = console.readRequired("New name                                      : ");
     final String email= console.readRequired("New email                                     : ");
     final String password = console.readOptional("New password (leave blank to keep current)    : ");
-    final String role = console.readRequired("Role   (ADMIN / MEMBER / REVIEWER)            : ");
-    final String status=console.readRequired("Status (ACTIVE / INACTIVE / PENDING / BLOCKED): ");
+    final String rolePrompt = String.format("Role   (%s / %s / %s)            : ",
+      UserEnumConstants.ROLE_ADMIN,
+      UserEnumConstants.ROLE_MEMBER,
+      UserEnumConstants.ROLE_REVIEWER);
+    final String statusPrompt = String.format("Status (%s / %s / %s / %s): ",
+      UserEnumConstants.STATUS_ACTIVE,
+      UserEnumConstants.STATUS_INACTIVE,
+      UserEnumConstants.STATUS_PENDING,
+      UserEnumConstants.STATUS_BLOCKED);
+    final String role = console.readRequired(rolePrompt);
+    final String status = console.readRequired(statusPrompt);
 
     try {
       final UserResponse updatedUser = userController.updateUser(

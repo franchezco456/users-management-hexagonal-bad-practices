@@ -12,6 +12,7 @@ import com.jcaa.usersmanagement.domain.valueobject.UserId;
 import com.jcaa.usersmanagement.domain.valueobject.UserName;
 import com.jcaa.usersmanagement.domain.valueobject.UserPassword;
 import java.util.Objects;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.constant.UserEnumConstants;
 
 public class UserApplicationMapper {
 
@@ -81,11 +82,11 @@ public class UserApplicationMapper {
     if (Objects.isNull(role) || role.isBlank()) {
       return -1;
     }
-    if ("ADMIN".equalsIgnoreCase(role)) {
+    if (UserEnumConstants.ROLE_ADMIN.equalsIgnoreCase(role)) {
       return 1;
-    } else if ("MEMBER".equalsIgnoreCase(role)) {
+    } else if (UserEnumConstants.ROLE_MEMBER.equalsIgnoreCase(role)) {
       return 2;
-    } else if ("REVIEWER".equalsIgnoreCase(role)) {
+    } else if (UserEnumConstants.ROLE_REVIEWER.equalsIgnoreCase(role)) {
       return 3;
     }
     return -1;

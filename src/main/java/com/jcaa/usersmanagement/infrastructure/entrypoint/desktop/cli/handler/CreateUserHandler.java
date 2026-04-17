@@ -8,6 +8,7 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.CreateUser
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.constant.UserEnumConstants;
 @Log
 @RequiredArgsConstructor
 public final class CreateUserHandler implements OperationHandler {
@@ -22,7 +23,11 @@ public final class CreateUserHandler implements OperationHandler {
     final String name     = console.readRequired("Name                            : ");
     final String email    = console.readRequired("Email                           : ");
     final String password = console.readRequired("Password                        : ");
-    final String role     = console.readRequired("Role (ADMIN / MEMBER / REVIEWER): ");
+    final String rolePrompt = String.format("Role (%s / %s / %s): ",
+      UserEnumConstants.ROLE_ADMIN,
+      UserEnumConstants.ROLE_MEMBER,
+      UserEnumConstants.ROLE_REVIEWER);
+    final String role = console.readRequired(rolePrompt);
 
     try {
       final UserResponse created =
