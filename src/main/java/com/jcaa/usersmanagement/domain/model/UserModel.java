@@ -46,5 +46,8 @@ public class UserModel {
     return new UserModel(id, name, email, password, role, UserStatus.INACTIVE);
   }
 
+  public boolean isAllowedToLogin() {
+    return status == UserStatus.ACTIVE;
+  }
 
 }
