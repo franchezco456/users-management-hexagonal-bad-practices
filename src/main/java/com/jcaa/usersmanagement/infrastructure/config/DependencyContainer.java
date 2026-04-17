@@ -23,7 +23,7 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.controller.Use
 import java.sql.Connection;
 import jakarta.validation.Validator;
 
-public final class DependencyContainer {
+public final class DependencyContainer implements UserControllerProvider {
 
   private static final String DB_HOST = "db.host";
   private static final String DB_PORT = "db.port";
@@ -73,6 +73,7 @@ public final class DependencyContainer {
             loginUseCase);
   }
 
+  @Override
   public UserController userController() {
     return userController;
   }

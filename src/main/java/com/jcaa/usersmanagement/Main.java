@@ -1,6 +1,7 @@
 package com.jcaa.usersmanagement;
 
 import com.jcaa.usersmanagement.infrastructure.config.DependencyContainer;
+import com.jcaa.usersmanagement.infrastructure.config.UserControllerProvider;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.UserManagementCli;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.io.ConsoleIO;
 import java.util.Scanner;
@@ -26,14 +27,14 @@ public final class Main {
   public static void main(final String[] args) {
     log.info("Starting Users Management System...");
     try (final Scanner scanner = new Scanner(System.in)) {
-      final DependencyContainer container = buildContainer();
+      final UserControllerProvider container = buildContainer();
       final ConsoleIO consoleIO = buildConsole(scanner);
       final UserManagementCli cli = buildCli(container, consoleIO);
       run(cli);
     }
   }
 
-  private static DependencyContainer buildContainer() {
+  private static UserControllerProvider buildContainer() {
     return new DependencyContainer();
   }
 
@@ -42,7 +43,7 @@ public final class Main {
   }
 
   private static UserManagementCli buildCli(
-      final DependencyContainer container, final ConsoleIO consoleIO) {
+      final UserControllerProvider container, final ConsoleIO consoleIO) {
     return new UserManagementCli(container.userController(), consoleIO);
   }
 
