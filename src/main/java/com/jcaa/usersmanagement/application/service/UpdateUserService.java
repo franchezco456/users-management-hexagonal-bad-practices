@@ -38,7 +38,7 @@ public final class UpdateUserService implements UpdateUserUseCase {
     // Solución: void execute(command) para el comando + UserModel getUpdatedUser(id) para la consulta.
     validateCommand(command);
 
-    log.info("Actualizando usuario id=" + command.id() + ", email=" + command.email() + ", nombre=" + command.name());
+    log.info("Actualizando usuario.");
 
     final UserId userId = new UserId(command.id());
     final UserModel current = findExistingUserOrFail(userId);
@@ -50,26 +50,12 @@ public final class UpdateUserService implements UpdateUserUseCase {
         UserApplicationMapper.fromUpdateCommandToModel(command, current.getPassword());
     final UserModel updatedUser = updateUserPort.update(userToUpdate);
 
-    // Clean Code - Regla 6: parámetro booleano de control (boolean flag).
-    // La regla dice: no usar boolean flags para cambiar el comportamiento interno de un método.
-    // Si true/false altera el flujo, probablemente hay dos responsabilidades distintas.
-    // Solución: dos métodos separados updateUserAndNotify() y updateUserSilently().
-    notifyIfRequired(updatedUser, true);
+    emailNotificationService.notifyUserUpdated(updatedUser);
 
     return updatedUser;
   }
 
-  // Clean Code - Regla 6: método con dos modos de operar según el boolean — viola la regla.
-  // Clean Code - Regla 7: efecto secundario oculto — el nombre "notifyIfRequired" no indica
-  // que también hace logging cuando notify=false. El nombre es engañoso sobre sus efectos.
-  private void notifyIfRequired(final UserModel user, final boolean notify) {
-    if (notify) {
-      emailNotificationService.notifyUserUpdated(user);
-    } else {
-      // cuando no se notifica, se registra igualmente en el log interno
-      log.info("Actualización silenciosa para usuario: " + user.getId().value());
-    }
-  }
+
 
   private void validateCommand(final UpdateUserCommand command) {
     final Set<ConstraintViolation<UpdateUserCommand>> violations = validator.validate(command);
