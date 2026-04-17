@@ -140,7 +140,7 @@ class UserControllerTest {
 
   @Test
   @DisplayName(
-      "findUserById() builds a GetUserByIdQuery with the given id and returns the mapped response")
+      "findUserById() builds a GetUserByIdQuery with the given UserId and returns the mapped response")
   void findUserById_returnsMappedResponse_whenUserExists() {
     // Arrange
     final UserModel user =
@@ -148,7 +148,7 @@ class UserControllerTest {
     when(getUserByIdUseCase.execute(new GetUserByIdQuery("u-002"))).thenReturn(user);
 
     // Act
-    final UserResponse result = controller.findUserById("u-002");
+    final UserResponse result = controller.findUserById(new UserId("u-002"));
 
     // Assert
     assertAll(
@@ -171,7 +171,7 @@ class UserControllerTest {
     // Act & Assert
     assertThrows(
         UserNotFoundException.class,
-        () -> controller.findUserById("u-999"),
+          () -> controller.findUserById(new UserId("u-999")),
         "UserNotFoundException must propagate without being wrapped");
   }
 
