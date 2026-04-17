@@ -62,26 +62,14 @@ public class UserValidationUtils {
     return password != null && password.length() >= 8;
   }
 
-  // Clean Code - Regla 20 (objeto antes que primitivo cuando el concepto lo merezca):
-  // Este método recibe userId, email y status como String y int desnudos en lugar de
-  // usar los tipos de dominio UserId, UserEmail y UserStatus.
-  // El código pierde toda la protección de invariantes que ofrecen los value objects:
-  // un id vacío, un email malformado o un status inválido pasarían desapercibidos.
-  // La regla dice: encapsula conceptos como UserId, Email, Status con sus propios tipos.
-  // Clean Code - Regla 5 (pocos parámetros): además recibe maxInactivityDays como
-  // primitivo int suelto, que podría encapsularse en un objeto de política de acceso.
   public static boolean canPerformAction(
-      final String userId,
-      final String email,
-      final String status,
-      final int maxInactivityDays) {
-    // Clean Code - Regla 17: condición larga y difícil de leer que debería extraerse.
-    if (userId == null || userId.isBlank() || email == null || !email.contains("@")) {
+      final UserModel user,
+      final com.jcaa.usersmanagement.domain.model.AccessPolicy policy) {
+    if (user == null || user.getId() == null || user.getEmail() == null) {
       return false;
     }
-    // Clean Code - Regla 18: "ACTIVE" y "PENDING" son literales mágicos —
-    // deberían ser UserStatus.ACTIVE.name() o constantes con nombre descriptivo.
-    return ("ACTIVE".equals(status) || "PENDING".equals(status)) && maxInactivityDays >= 0;
+    return (user.getStatus() == UserStatus.ACTIVE || user.getStatus() == UserStatus.PENDING) 
+        && policy.maxInactivityDays() >= 0;
   }
 }
 

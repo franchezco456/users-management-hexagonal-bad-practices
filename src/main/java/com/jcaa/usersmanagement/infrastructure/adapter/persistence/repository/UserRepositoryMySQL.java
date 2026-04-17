@@ -91,26 +91,7 @@ public final class UserRepositoryMySQL
     return findByIdOrFail(user.getId());
   }
 
-  // Clean Code - Regla 5 (pocos parámetros): método alternativo de guardado que recibe
-  // cada campo como parámetro primitivo separado en vez de encapsularlos en un objeto.
-  // La regla dice: si una función necesita muchos datos relacionados, encapsúlalos en un objeto.
-  // createUser(String name, String email, ...) es señal clara de diseño mejorable.
-  public UserModel saveWithFields(
-      final String id,
-      final String name,
-      final String email,
-      final String password,
-      final String role,
-      final String status) {
-    // Clean Code - Regla 10: comentario redundante — la línea siguiente ya es clara.
-    // verificar que todos los parámetros tengan valor
-    if (id == null || name == null || email == null || password == null || role == null || status == null) {
-      throw new IllegalArgumentException("Todos los campos son obligatorios");
-    }
-    // Clean Code - Regla 10: otro comentario redundante.
-    // construir y guardar el modelo
-    throw new UnsupportedOperationException("Usar save(UserModel) en su lugar.");
-  }
+
 
   @Override
   public UserModel update(final UserModel user) {
