@@ -7,19 +7,15 @@ import com.jcaa.usersmanagement.domain.valueobject.UserId;
 import com.jcaa.usersmanagement.domain.valueobject.UserName;
 import com.jcaa.usersmanagement.domain.valueobject.UserPassword;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 // Clean Code - Regla 15 (inmutabilidad como preferencia de diseño):
-// Se cambió @Value por @Data + @AllArgsConstructor, lo que expone setters públicos
-// para todos los campos. Un modelo de dominio debe ser inmutable: los setters permiten
-// que cualquier clase modifique el estado del objeto sin pasar por invariantes ni
-// reglas de negocio.
-// Con @Value todos los campos serían final y no habría setters.
-// Con @Data + @AllArgsConstructor cualquiera puede hacer userModel.setStatus(BLOCKED)
-// desde fuera del dominio, rompiendo el encapsulamiento.
-@Data
-@AllArgsConstructor
+// Se ha cambiado @Data por @Value para lograr verdadera inmutabilidad.
+// Con @Value todos los campos son final y no hay setters generados.
+// El estado solo puede cambiar mediante métodos que retornan una nueva instancia
+// (como activate() y deactivate()), asegurando que las invariantes se respeten.
+// Esto encapsula correctamente el estado y previene modificaciones no autorizadas.
+@Value
 public class UserModel {
 
   UserId id;
