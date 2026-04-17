@@ -79,14 +79,12 @@ public final class UserManagementCli {
 
   private void printMenu() {
     console.println();
-    // VIOLACIÓN Regla 10: se usa el String literal "==================..." hardcodeado directamente
-    // en vez de reutilizar la constante MENU_BORDER que ya está definida en la misma clase.
-    console.println("  ==========================================");
+    console.println(MENU_BORDER);
     console.println("    Main Menu");
-    console.println("  ==========================================");
+    console.println(MENU_BORDER);
     for (final MenuOption option : MenuOption.values()) {
       console.printf("    [%d] %s%n", option.getNumber(), option.getDescription());
     }
-    console.println("  ==========================================");
+    console.println(MENU_BORDER);
   }
 }
