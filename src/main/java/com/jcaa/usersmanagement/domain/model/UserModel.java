@@ -71,4 +71,12 @@ public class UserModel {
     return password.verifyPlain(plainPassword);
   }
 
+  public String getRoleDisplayName() {
+    return role.name();
+  }
+
+  public String getStatusDisplayName() {
+    return status.name();
+  }
+
 }

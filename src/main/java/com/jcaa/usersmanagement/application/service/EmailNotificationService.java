@@ -31,11 +31,12 @@ public final class EmailNotificationService {
   private final EmailSenderPort emailSenderPort;
 
   public void notifyUserCreated(final UserModel user, final String plainPassword) {
+    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
     final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getName().value(),
-        TOKEN_EMAIL, user.getEmail().value(),
+        TOKEN_NAME, user.getNameValue(),
+        TOKEN_EMAIL, user.getEmailValue(),
         TOKEN_PASSWORD, plainPassword,
-        TOKEN_ROLE, user.getRole().name());
+        TOKEN_ROLE, user.getRoleDisplayName());
     prepareAndSendNotification(user, SUBJECT_CREATED, "user-created.html", tokens);
   }
 
@@ -44,11 +45,12 @@ public final class EmailNotificationService {
     // loadTemplate → renderTemplate → buildDestination → sendOrLog.
     // Esta lógica de orquestación debería extraerse a un método genérico privado.
     // Clean Code - Regla 25 y 26: misma sobrecompactación que arriba.
+    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
     final Map<String, String> tokens = Map.of(
-        TOKEN_NAME, user.getName().value(),
-        TOKEN_EMAIL, user.getEmail().value(),
-        TOKEN_ROLE, user.getRole().name(),
-        TOKEN_STATUS, user.getStatus().name());
+        TOKEN_NAME, user.getNameValue(),
+        TOKEN_EMAIL, user.getEmailValue(),
+        TOKEN_ROLE, user.getRoleDisplayName(),
+        TOKEN_STATUS, user.getStatusDisplayName());
     prepareAndSendNotification(user, SUBJECT_UPDATED, "user-updated.html", tokens);
   }
 
@@ -67,8 +69,9 @@ public final class EmailNotificationService {
 
   private static EmailDestinationModel buildDestination(
       final UserModel user, final String subject, final String body) {
+    // Ley de Déméter: usar métodos delegadores en lugar de encadenamiento profundo
     return new EmailDestinationModel(
-        user.getEmail().value(), user.getName().value(), subject, body);
+        user.getEmailValue(), user.getNameValue(), subject, body);
   }
 
   private String loadTemplate(final String templateName) {
