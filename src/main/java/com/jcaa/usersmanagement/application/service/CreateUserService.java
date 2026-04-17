@@ -38,7 +38,7 @@ public final class CreateUserService implements CreateUserUseCase {
 
     verifyEmailDoesNotExist(command.email());
 
-    final UserModel userToSave = buildUserModel(command);
+    final UserModel userToSave = UserApplicationMapper.fromCreateCommandToModel(command);
     final UserModel savedUser = saveUser(userToSave);
 
     notifyUser(savedUser, command.password());
@@ -66,18 +66,7 @@ public final class CreateUserService implements CreateUserUseCase {
     }
   }
 
-  private UserModel buildUserModel(final CreateUserCommand command) {
-    // Clean Code - Regla 3: aquí se mezcla lógica de negocio de alto nivel (crear usuario)
-    // con detalles de construcción de bajo nivel (new UserId, new UserName, etc.).
-    // Estos detalles deberían estar encapsulados en el mapper o en una fábrica.
-    return new UserModel(
-        new UserId(command.id()),
-        new UserName(command.name()),
-        new UserEmail(command.email()),
-        UserPassword.fromPlainText(command.password()),
-        UserRole.fromString(command.role()),
-        UserStatus.PENDING);
-  }
+
 
   private UserModel saveUser(final UserModel userToSave) {
     // Clean Code - Regla 10: comentario que explica lo obvio — no aporta valor.
