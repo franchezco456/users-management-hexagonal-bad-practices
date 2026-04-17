@@ -36,20 +36,29 @@ public final class UserResponsePrinter {
   }
 
   // Clean Code - Regla 27 (código listo para leer, no solo para compilar):
-  // Este método usa Optional + streams anidados + reduce para hacer algo que
-  // puede describirse como "mostrar los usuarios o un aviso de vacío".
-  // La implementación castiga al lector sin aportar ningún beneficio real.
-  // Sin explicación oral del autor es imposible deducir su intención en segundos.
+  // Intención clara: mostrar resumen de usuarios, o "no encontrados" si la lista está vacía.
+  // Descompuesto en pasos explícitos y legibles sin necesidad de explicación oral del autor.
   public void printSummary(final List<UserResponse> users) {
-    Optional.ofNullable(users)
-        .filter(list -> !list.isEmpty())
-        .map(list -> list.stream()
-            .reduce(
-                new StringBuilder(),
-                (sb, u) -> sb.append(String.format("  %s (%s)%n", u.name(), getStatusLabel(u.status()))),
-                StringBuilder::append))
-        .map(StringBuilder::toString)
-        .ifPresentOrElse(console::println, () -> console.println("  No users found."));
+    if (isUsersListEmpty(users)) {
+      console.println("  No users found.");
+      return;
+    }
+
+    final String usersSummaryText = buildUsersSummaryText(users);
+    console.println(usersSummaryText);
+  }
+
+  private boolean isUsersListEmpty(final List<UserResponse> users) {
+    return users == null || users.isEmpty();
+  }
+
+  private String buildUsersSummaryText(final List<UserResponse> users) {
+    final StringBuilder summary = new StringBuilder();
+    for (final UserResponse user : users) {
+      final String userLine = String.format("  %s (%s)%n", user.name(), getStatusLabel(user.status()));
+      summary.append(userLine);
+    }
+    return summary.toString();
   }
 
   // Clean Code - Regla 16 (evitar condicionales repetitivas cuando el polimorfismo aporta claridad):
