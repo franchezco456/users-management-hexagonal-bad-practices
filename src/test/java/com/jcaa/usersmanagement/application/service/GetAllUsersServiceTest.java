@@ -62,7 +62,7 @@ class GetAllUsersServiceTest {
     // comportamiento correcto del negocio, no validar un bug.
     when(getAllUsersPort.getAll()).thenReturn(List.of());
     final List<UserModel> result = service.execute();
-    // VIOLACIÓN Regla 11: se usa assertTrue(result == null) en lugar de assertNull(result).
-    assertTrue(result == null);
+    // VIOLACIÓN Regla 11: se usa assertTrue(result.isEmpty()) en lugar de assertEquals(0, result.size())
+    assertTrue(result.isEmpty());
   }
 }
